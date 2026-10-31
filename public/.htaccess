@@ -1,0 +1,24 @@
+Options -Indexes
+RewriteEngine On
+
+# Keep the standalone start page working on Apache hosting.
+RewriteRule ^start/?$ /start/index.html [L]
+
+# Let Apache serve real files and directories, then send app routes to Vite.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
+# Unity WebGL compression files need these MIME types and encodings.
+<IfModule mod_mime.c>
+  AddType application/wasm .wasm
+  AddType application/octet-stream .data
+  AddEncoding br .br
+  AddEncoding gzip .gz
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(data|wasm|js)\.(br|gz)$">
+    Header set Vary "Accept-Encoding"
+  </FilesMatch>
+</IfModule>
